@@ -2,15 +2,15 @@ import fp from 'fastify-plugin'
 import fastifyMongodb, { FastifyMongodbOptions } from '@fastify/mongodb'
 
 /**
- * This plugins adds mongodb support http errors
+ * This plugins adds mongodb support
  *
  * @see https://github.com/fastify/fastify-mongodb
  */
 export default fp<FastifyMongodbOptions>(async (fastify) => {
   fastify.register(fastifyMongodb, {
-    appName: 'evia-powerstake',
-    database: 'powerstake',
+    appName: 'evia-propel',
+    database: 'propel',
     forceClose: true,
-    url: 'mongodb://localhost:27017',
+    url: process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27017',
   });
 });

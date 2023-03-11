@@ -3,16 +3,17 @@ import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 
 /**
- * This plugins adds support for swagger
+ * This plugins adds support for swagger and swaggerUI
  *
- * @see https://github.com/fastify/fastify-sensible
+ * @see https://github.com/fastify/fastify-swagger
+ * @see https://github.com/fastify/fastify-swagger-ui
  */
 export default fp(async (fastify) => {
   fastify.register(fastifySwagger, {
-    swagger: {
+    openapi: {
       info: {
-        title: 'Powerstake API',
-        description: 'Powerstake API documentation',
+        title: 'Evia Propel API',
+        description: 'Evia Propel API documentation',
         version: '0.1.0',
       },
     },
@@ -23,10 +24,6 @@ export default fp(async (fastify) => {
     uiConfig: {
       docExpansion: 'list',
       deepLinking: false
-    },
-    uiHooks: {
-      onRequest: function (request, reply, next) { next() },
-      preHandler: function (request, reply, next) { next() }
     },
   });
 })

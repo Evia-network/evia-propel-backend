@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { DeleteResult } from 'mongodb';
 import { LPMiningAuthzGrantsRepository } from '../repository/lp-mining-authz-grants-repository';
 import { LPMiningGrantRecord } from '../schema/grant-record-schema';
 import { LPMiningGrantRecordRequest } from '../types/grant-record-request';
@@ -11,31 +12,48 @@ export class LPMiningAuthzGrantsService {
     }
 
     async getLPMiningAuthzGrantsCount(): Promise<number> {
-        return await this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsCount();
+        return this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsCount();
+    }
+
+    async createLPMiningAuthzGrantRecord(lpMiningGrantRecordRequest: LPMiningGrantRecordRequest): Promise<LPMiningGrantRecord> {
+        const lpMiningGrantRecord: LPMiningGrantRecord = {
+            network: lpMiningGrantRecordRequest.network,
+            grantee: lpMiningGrantRecordRequest.grantee,
+            granter: lpMiningGrantRecordRequest.granter,
+            poolId: lpMiningGrantRecordRequest.poolId,
+            ticker: lpMiningGrantRecordRequest.ticker,
+            expiration: new Date(lpMiningGrantRecordRequest.expiration).toISOString(),
+            chosenEpochDuration: lpMiningGrantRecordRequest.chosenEpochDuration,
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+        };
+        const insertResult = await this.lpMiningAuthzGrantsRepository.insertLPMiningAuthzGrant(lpMiningGrantRecord);
+        console.log(`insertResult: ${JSON.stringify(insertResult)}`);
+        return lpMiningGrantRecord;
     }
     
     async getLPMiningAuthzGrantsCountByGranter(granter: string): Promise<number> {
-        return await this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsCountByGranter(granter);
+        return this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsCountByGranter(granter);
     }
     
     async getLPMiningAuthzGrantsCountByGrantee(grantee: string): Promise<number> {
-        return await this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsCountByGrantee(grantee);
+        return this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsCountByGrantee(grantee);
     }
     
     async getLPMiningAuthzGrantsByGranter(granter: string): Promise<LPMiningGrantRecord[]> {
-        return await this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsByGranter(granter);
+        return this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsByGranter(granter);
     }
     
     async getLPMiningAuthzGrantsByGrantee(grantee: string): Promise<LPMiningGrantRecord[]> {
-        return await this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsByGrantee(grantee);
+        return this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsByGrantee(grantee);
     }
     
-    async updateLPMiningAuthzGrant(id: string, lpMiningAuthzGrantRequest: LPMiningGrantRecordRequest): Promise<LPMiningGrantRecord> {
-        return await this.lpMiningAuthzGrantsRepository.updateLPMiningAuthzGrant(id, lpMiningAuthzGrantRequest);
+    async updateLPMiningAuthzGrant(id: string, lpMiningAuthzGrantRequest: LPMiningGrantRecordRequest) {
+        return this.lpMiningAuthzGrantsRepository.updateLPMiningAuthzGrant(id, lpMiningAuthzGrantRequest);
     }
     
-    async deleteLPMiningAuthzGrant(id: string): Promise<LPMiningGrantRecord> {
-        return await this.lpMiningAuthzGrantsRepository.deleteLPMiningAuthzGrant(id);
+    async deleteLPMiningAuthzGrant(id: string): Promise<DeleteResult> {
+        return this.lpMiningAuthzGrantsRepository.deleteLPMiningAuthzGrant(id);
     }
     
 }

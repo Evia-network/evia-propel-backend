@@ -2,18 +2,30 @@ import { FastifyPluginAsync } from "fastify"
 import { LPMiningAuthzGrantsService } from "../../services/lp-mining-authz-grants-service"
 import { LPMiningGrantRecord } from "../../schema/grant-record-schema"
 import { Type } from "@sinclair/typebox"
+import { LPMiningGrantRecordRequest } from "../../types/grant-record-request"
 
-const stake: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const lpMiningStaking: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const lpMiningAuthzGrantsService = new LPMiningAuthzGrantsService(fastify);
 
-  fastify.get('/', {
-    schema: {
-      tags: ['lp-mining'],
-      summary: 'Get all lp mining authz grants',
-      description: 'Get all lp mining authz grants',
-    },
+  fastify.post<{
+    Body: LPMiningGrantRecordRequest,
+    Response: LPMiningGrantRecord,
+  }>(
+    '/', {
+      schema: {
+        tags: ['lp-mining'],
+        summary: 'Create lp mining authz grant record',
+        description: 'Create lp mining authz grant record',
+        consumes: ['application/json'],
+        body: LPMiningGrantRecordRequest,
+        response: {
+          200: LPMiningGrantRecord,
+        },
+      },
   }, async function (request, reply) {
-    return 'this is an example';
+    const grantRecordRequest = request.body as LPMiningGrantRecordRequest;
+    const grantRecord = await lpMiningAuthzGrantsService.createLPMiningAuthzGrantRecord(grantRecordRequest);
+    return reply.send(grantRecord);
   });
 
   fastify.get<{
@@ -21,7 +33,7 @@ const stake: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       granterAddress: string;
     },
     Response: Array<LPMiningGrantRecord>,
-  }> ('/granter/:granterAddress', {
+  }>('/granter/:granterAddress', {
     schema: {
       params: {
         type: 'object',
@@ -45,4 +57,4 @@ const stake: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   });
 }
 
-export default stake;
+export default lpMiningStaking;

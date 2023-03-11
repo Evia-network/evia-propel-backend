@@ -2,18 +2,30 @@ import { FastifyPluginAsync } from "fastify"
 import { StakeAuthzGrantsService } from "../../services/stake-authz-grants-service"
 import { StakingGrantRecord } from "../../schema/grant-record-schema"
 import { Type } from "@sinclair/typebox"
+import { StakingGrantRecordRequest } from "../../types/grant-record-request"
 
 const stake: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const stakeAuthzGrantService = new StakeAuthzGrantsService(fastify);
 
-  fastify.get('/', {
-    schema: {
-      tags: ['stake'],
-      summary: 'Get all staking authz grants',
-      description: 'Get all staking authz grants',
-    },
+  fastify.post<{
+    Body: StakingGrantRecordRequest,
+    Response: StakingGrantRecord,
+  }>(
+    '/', {
+      schema: {
+        tags: ['stake'],
+        summary: 'Create stake authz grant record',
+        description: 'Create stake authz grant record',
+        consumes: ['application/json'],
+        body: StakingGrantRecordRequest,
+        response: {
+          200: StakingGrantRecord,
+        },
+      },
   }, async function (request, reply) {
-    return 'this is an example';
+    const grantRecordRequest = request.body as StakingGrantRecordRequest;
+    const grantRecord = await stakeAuthzGrantService.createStakeAuthzGrantRecord(grantRecordRequest);
+    return reply.send(grantRecord);
   });
 
   fastify.get<{

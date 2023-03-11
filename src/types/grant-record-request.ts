@@ -12,7 +12,7 @@ const StakingGrantRecordRequest = Type.Object({
     grantee: Type.String(),
     granter: Type.String(),
     chainId: Type.String(),
-    expiration: Type.Date({ format: 'date-time'}),
+    expiration: Type.String(),
     maxAmount: Type.String(),
     chosenEpochDuration: Type.Number(),
     allowList: Type.Optional(Type.Array(ValidatorStakeInfo)),
@@ -27,7 +27,7 @@ const LPMiningGrantRecordRequest = Type.Object({
     granter: Type.String(),
     poolId: Type.String(),
     ticker: Type.String(),
-    expiration: Type.Date({ format: 'date-time'}),
+    expiration: Type.String(),
     chosenEpochDuration: Type.Number(),
 })
 

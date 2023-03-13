@@ -1,6 +1,6 @@
 import { Document, InsertOneResult, UpdateResult, DeleteResult } from "mongodb";
 import { LPMiningGrantRecord } from "../schema/grant-record-schema";
-import { LPMiningGrantRecordRequest } from "../types/grant-record-request";
+import { CreateLPMiningGrantRecordRequest, UpdateLPMiningGrantRecordRequest } from "../types/grant-record-request";
 import { BaseRepository } from "./base-repository";
 
 export class LPMiningAuthzGrantsRepository extends BaseRepository {
@@ -34,12 +34,12 @@ export class LPMiningAuthzGrantsRepository extends BaseRepository {
         return this.getObjectById(this.LP_MINING_AUTHZ_GRANTS_COLLECTION_NAME, id);
     }
 
-    async insertLPMiningAuthzGrant(lpMiningAuthzGrantRequest: LPMiningGrantRecordRequest): Promise<InsertOneResult> {
+    async insertLPMiningAuthzGrant(lpMiningAuthzGrantRequest: CreateLPMiningGrantRecordRequest): Promise<InsertOneResult> {
         return this.insertObject(this.LP_MINING_AUTHZ_GRANTS_COLLECTION_NAME, lpMiningAuthzGrantRequest);
     }
 
-    async updateLPMiningAuthzGrant(id: string, lpMiningAuthzGrantRequest: LPMiningGrantRecordRequest): Promise<UpdateResult> {
-        return this.updateObject(this.LP_MINING_AUTHZ_GRANTS_COLLECTION_NAME, id, lpMiningAuthzGrantRequest);
+    async updateLPMiningAuthzGrant(id: string, lpMiningAuthzGrantRequest: UpdateLPMiningGrantRecordRequest): Promise<UpdateResult> { 
+        return this.updateObject(this.LP_MINING_AUTHZ_GRANTS_COLLECTION_NAME, id, { ...lpMiningAuthzGrantRequest});
     }
 
     async deleteLPMiningAuthzGrant(id: string): Promise<DeleteResult> {
@@ -54,7 +54,7 @@ export class LPMiningAuthzGrantsRepository extends BaseRepository {
         return this.deleteAllObjects(this.LP_MINING_AUTHZ_GRANTS_COLLECTION_NAME);
     }
 
-    async updateLPMiningAuthzGrantsByQuery(query: any, lpMiningAuthzGrantRequest: LPMiningGrantRecordRequest): Promise<Document | UpdateResult> {
+    async updateLPMiningAuthzGrantsByQuery(query: any, lpMiningAuthzGrantRequest: CreateLPMiningGrantRecordRequest): Promise<Document | UpdateResult> {
         return this.updateObjectsByQuery(this.LP_MINING_AUTHZ_GRANTS_COLLECTION_NAME, query, lpMiningAuthzGrantRequest);
     }
 

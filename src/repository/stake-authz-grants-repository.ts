@@ -1,6 +1,6 @@
 import { Document, DeleteResult, InsertOneResult, UpdateResult } from "mongodb";
 import { StakingGrantRecord } from "../schema/grant-record-schema";
-import { StakingGrantRecordRequest } from "../types/grant-record-request";
+import { CreateStakingGrantRecordRequest, UpdateStakingGrantRecordRequest } from "../types/grant-record-request";
 import { BaseRepository } from "./base-repository";
 
 export class StakeAuthzGrantsRepository extends BaseRepository {
@@ -34,11 +34,11 @@ export class StakeAuthzGrantsRepository extends BaseRepository {
         return this.getObjectById(this.STAKE_AUTHZ_GRANTS_COLLECTION_NAME, id);
     }
 
-    async insertStakeAuthzGrant(stakeAuthzGrantRequest: StakingGrantRecordRequest): Promise<InsertOneResult> {
+    async insertStakeAuthzGrant(stakeAuthzGrantRequest: CreateStakingGrantRecordRequest): Promise<InsertOneResult> {
         return this.insertObject(this.STAKE_AUTHZ_GRANTS_COLLECTION_NAME, stakeAuthzGrantRequest);
     }
 
-    async updateStakeAuthzGrant(id: string, stakeAuthzGrantRequest: StakingGrantRecordRequest): Promise<UpdateResult> {
+    async updateStakeAuthzGrant(id: string, stakeAuthzGrantRequest: UpdateStakingGrantRecordRequest): Promise<UpdateResult> {
         return this.updateObject(this.STAKE_AUTHZ_GRANTS_COLLECTION_NAME, id, stakeAuthzGrantRequest);
     }
 
@@ -54,7 +54,7 @@ export class StakeAuthzGrantsRepository extends BaseRepository {
         return this.deleteAllObjects(this.STAKE_AUTHZ_GRANTS_COLLECTION_NAME);
     }
 
-    async updateStakeAuthzGrantsByQuery(query: any, stakeAuthzGrantRequest: StakingGrantRecordRequest): Promise<Document | UpdateResult> {
+    async updateStakeAuthzGrantsByQuery(query: any, stakeAuthzGrantRequest: CreateStakingGrantRecordRequest): Promise<Document | UpdateResult> {
         return this.updateObjectsByQuery(this.STAKE_AUTHZ_GRANTS_COLLECTION_NAME, query, stakeAuthzGrantRequest);
     }
 

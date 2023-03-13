@@ -2,7 +2,8 @@ import { FastifyInstance } from 'fastify';
 import { DeleteResult } from 'mongodb';
 import { LPMiningAuthzGrantsRepository } from '../repository/lp-mining-authz-grants-repository';
 import { LPMiningGrantRecord } from '../schema/grant-record-schema';
-import { LPMiningGrantRecordRequest } from '../types/grant-record-request';
+import { CreateLPMiningGrantRecordRequest, UpdateLPMiningGrantRecordRequest } from '../types/grant-record-request';
+import { UpdateObjectResponse } from '../types/update-object-response';
 
 
 export class LPMiningAuthzGrantsService {
@@ -15,7 +16,7 @@ export class LPMiningAuthzGrantsService {
         return this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsCount();
     }
 
-    async createLPMiningAuthzGrantRecord(lpMiningGrantRecordRequest: LPMiningGrantRecordRequest): Promise<LPMiningGrantRecord> {
+    async createLPMiningAuthzGrantRecord(lpMiningGrantRecordRequest: CreateLPMiningGrantRecordRequest): Promise<LPMiningGrantRecord> {
         const lpMiningGrantRecord: LPMiningGrantRecord = {
             network: lpMiningGrantRecordRequest.network,
             grantee: lpMiningGrantRecordRequest.grantee,
@@ -48,8 +49,10 @@ export class LPMiningAuthzGrantsService {
         return this.lpMiningAuthzGrantsRepository.getLPMiningAuthzGrantsByGrantee(grantee);
     }
     
-    async updateLPMiningAuthzGrant(id: string, lpMiningAuthzGrantRequest: LPMiningGrantRecordRequest) {
-        return this.lpMiningAuthzGrantsRepository.updateLPMiningAuthzGrant(id, lpMiningAuthzGrantRequest);
+    async updateLPMiningAuthzGrant(id: string, lpMiningAuthzGrantRequest: UpdateLPMiningGrantRecordRequest): Promise<UpdateObjectResponse> {
+        const updateResult = this.lpMiningAuthzGrantsRepository.updateLPMiningAuthzGrant(id, lpMiningAuthzGrantRequest);
+        const updateResponse: UpdateObjectResponse = {updated: (await updateResult).acknowledged};
+        return updateResponse;
     }
     
     async deleteLPMiningAuthzGrant(id: string): Promise<DeleteResult> {

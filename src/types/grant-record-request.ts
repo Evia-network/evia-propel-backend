@@ -8,7 +8,7 @@ const ValidatorStakeInfo = Type.Object({
 
 type ValidatorStakeInfo = Static<typeof ValidatorStakeInfo>
 
-const StakingGrantRecordRequest = Type.Object({
+const CreateStakingGrantRecordRequest = Type.Object({
     grantee: Type.String(),
     granter: Type.String(),
     chainId: Type.String(),
@@ -19,9 +19,19 @@ const StakingGrantRecordRequest = Type.Object({
     blockList: Type.Optional(Type.Array(ValidatorStakeInfo)),
 })
 
-type StakingGrantRecordRequest = Static<typeof StakingGrantRecordRequest>
+type CreateStakingGrantRecordRequest = Static<typeof CreateStakingGrantRecordRequest>
 
-const LPMiningGrantRecordRequest = Type.Object({
+const UpdateStakingGrantRecordRequest = Type.Object({
+    expiration: Type.Optional(Type.String()),
+    maxAmount: Type.Optional(Type.String()),
+    chosenEpochDuration: Type.Optional(Type.Number()),
+    allowList: Type.Optional(Type.Array(ValidatorStakeInfo)),
+    blockList: Type.Optional(Type.Array(ValidatorStakeInfo)),
+})
+
+type UpdateStakingGrantRecordRequest = Static<typeof UpdateStakingGrantRecordRequest>
+
+const CreateLPMiningGrantRecordRequest = Type.Object({
     network: Type.String(),
     grantee: Type.String(),
     granter: Type.String(),
@@ -31,6 +41,13 @@ const LPMiningGrantRecordRequest = Type.Object({
     chosenEpochDuration: Type.Number(),
 })
 
-type LPMiningGrantRecordRequest = Static<typeof LPMiningGrantRecordRequest>
+type CreateLPMiningGrantRecordRequest = Static<typeof CreateLPMiningGrantRecordRequest>
 
-export { ValidatorStakeInfo, StakingGrantRecordRequest, LPMiningGrantRecordRequest }
+const UpdateLPMiningGrantRecordRequest = Type.Object({
+    expiration: Type.Optional(Type.String()),
+    chosenEpochDuration: Type.Optional(Type.Number()),
+})
+
+type UpdateLPMiningGrantRecordRequest = Static<typeof UpdateLPMiningGrantRecordRequest>
+
+export { ValidatorStakeInfo, CreateStakingGrantRecordRequest, CreateLPMiningGrantRecordRequest, UpdateStakingGrantRecordRequest, UpdateLPMiningGrantRecordRequest }

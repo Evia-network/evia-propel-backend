@@ -2,13 +2,14 @@ import { FastifyPluginAsync } from "fastify"
 import { LPMiningAuthzGrantsService } from "../../services/lp-mining-authz-grants-service"
 import { LPMiningGrantRecord } from "../../schema/grant-record-schema"
 import { Type } from "@sinclair/typebox"
-import { LPMiningGrantRecordRequest } from "../../types/grant-record-request"
+import { CreateLPMiningGrantRecordRequest, UpdateLPMiningGrantRecordRequest } from "../../types/grant-record-request"
+import { UpdateObjectResponse } from "../../types/update-object-response"
 
 const lpMiningStaking: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const lpMiningAuthzGrantsService = new LPMiningAuthzGrantsService(fastify);
 
   fastify.post<{
-    Body: LPMiningGrantRecordRequest,
+    Body: CreateLPMiningGrantRecordRequest,
     Response: LPMiningGrantRecord,
   }>(
     '/', {
@@ -17,15 +18,46 @@ const lpMiningStaking: FastifyPluginAsync = async (fastify, opts): Promise<void>
         summary: 'Create lp mining authz grant record',
         description: 'Create lp mining authz grant record',
         consumes: ['application/json'],
-        body: LPMiningGrantRecordRequest,
+        body: CreateLPMiningGrantRecordRequest,
         response: {
           200: LPMiningGrantRecord,
         },
       },
   }, async function (request, reply) {
-    const grantRecordRequest = request.body as LPMiningGrantRecordRequest;
+    const grantRecordRequest = request.body as CreateLPMiningGrantRecordRequest;
     const grantRecord = await lpMiningAuthzGrantsService.createLPMiningAuthzGrantRecord(grantRecordRequest);
     return reply.send(grantRecord);
+  });
+
+  fastify.patch<{
+    Body: UpdateLPMiningGrantRecordRequest,
+    Response: LPMiningGrantRecord,
+    Params: {
+      id: string,
+    },
+  }>(
+    '/:id', {
+      schema: {
+        tags: ['lp-mining'],
+        summary: 'Update lp mining authz grant record',
+        description: 'Update lp mining authz grant record',
+        consumes: ['application/json'],
+        params: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+          },
+        },
+        body: UpdateLPMiningGrantRecordRequest,
+        response: {
+          200: UpdateObjectResponse,
+        },
+      },
+  }, async function (request, reply) {
+      const grantRecordRequest = request.body as UpdateLPMiningGrantRecordRequest;
+      const recordId: string = request.params.id;
+      const updateResponse = await lpMiningAuthzGrantsService.updateLPMiningAuthzGrant(recordId, grantRecordRequest);
+    return reply.send(updateResponse);
   });
 
   fastify.get<{

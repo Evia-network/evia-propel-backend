@@ -1,8 +1,9 @@
 import { FastifyInstance } from 'fastify';
 import { StakeAuthzGrantsRepository } from '../repository/stake-authz-grants-repository';
 import { StakingGrantRecord } from '../schema/grant-record-schema';
-import { StakingGrantRecordRequest } from '../types/grant-record-request';
-import { UpdateResult, DeleteResult } from 'mongodb';
+import { CreateStakingGrantRecordRequest, UpdateStakingGrantRecordRequest } from '../types/grant-record-request';
+import { DeleteResult } from 'mongodb';
+import { UpdateObjectResponse } from '../types/update-object-response';
 
 export class StakeAuthzGrantsService {
     stakeAuthzGrantsRepository: StakeAuthzGrantsRepository;
@@ -30,8 +31,10 @@ export class StakeAuthzGrantsService {
         return this.stakeAuthzGrantsRepository.getStakeAuthzGrantsByGrantee(grantee);
     }
     
-    async updateStakeAuthzGrant(id: string, stakeAuthzGrantRequest: StakingGrantRecordRequest): Promise<UpdateResult> {
-        return this.stakeAuthzGrantsRepository.updateStakeAuthzGrant(id, stakeAuthzGrantRequest);
+    async updateStakeAuthzGrant(id: string, stakeAuthzGrantRequest: UpdateStakingGrantRecordRequest): Promise<UpdateObjectResponse> {
+        const updateResult = this.stakeAuthzGrantsRepository.updateStakeAuthzGrant(id, stakeAuthzGrantRequest);
+        const response: UpdateObjectResponse = {updated: (await updateResult).acknowledged};
+        return response;
     }
     
     async deleteStakeAuthzGrant(id: string): Promise<DeleteResult> {
@@ -42,7 +45,7 @@ export class StakeAuthzGrantsService {
         return this.stakeAuthzGrantsRepository.deleteStakeAuthzGrantsByQuery(query);
     }
     
-    async createStakeAuthzGrantRecord(stakeGrantRecordRequest: StakingGrantRecordRequest): Promise<StakingGrantRecord> {
+    async createStakeAuthzGrantRecord(stakeGrantRecordRequest: CreateStakingGrantRecordRequest): Promise<StakingGrantRecord> {
         const stakeGrantRecord: StakingGrantRecord = {
             grantee: stakeGrantRecordRequest.grantee,
             granter: stakeGrantRecordRequest.granter,
